@@ -4,7 +4,7 @@
 <head>
   <title>Node Authentication</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     body { padding-top:80px; word-wrap:break-word; }
   </style>
@@ -42,7 +42,26 @@
 
             </div>
         </div>
+      <!-- REDDIT INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3 class="text-warning"><span class="fa fa-reddit"></span> Reddit</h3>
 
+                <!-- check if the user has this token (is the user authenticated with this social account) -->
+                <% if (user.reddit.token) { %>
+                    <p>
+                        <strong>id</strong>: <%= user.reddit.id %><br>
+                        <strong>token</strong>: <%= user.reddit.token %><br>
+                        <strong>username</strong>: <%= user.reddit.username %>
+                    </p>
+
+                    <a href="/unlink/reddit" class="btn btn-danger">Unlink</a>
+                <% } else { %>
+                    <a href="/connect/reddit" class="btn btn-warning">Connect Reddit</a>
+                <% } %>
+
+            </div>
+        </div>
       <!-- LOCAL INFORMATION -->
         <div class="col-sm-6">
             <div class="well">
