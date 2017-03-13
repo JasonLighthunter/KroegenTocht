@@ -1,4 +1,4 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, crypto) {
   // =====================================
   // HOME PAGE (with login links) ========
   // =====================================
@@ -74,6 +74,26 @@ module.exports = function(app, passport) {
     successRedirect : '/profile',
     failureRedirect : '/'
   }));
+
+  // =====================================
+  // REDDIT ROUTES =======================
+  // =====================================
+  // send to reddit to do authentication
+  app.get('/auth/reddit', function(req, res, next){
+    req.session.state = crypto.randomBytes(32).toString('hex');
+    passport.authenticate('reddit', {
+      state     : req.session.state,
+      duration  : 'permanent',
+    })(req, res, next);
+  });
+
+  app.get('/auth/reddit/callback', function(req, res, next){
+    // Check for origin via state token
+    passport.authenticate('reddit', {
+      successRedirect: '/profile',
+      failureRedirect: '/'
+    })(req, res, next);
+  });
   
   // =============================================================================
   // AUTHORIZE (ALREADY LOGGED IN / CONNECTING OTHER SOCIAL ACCOUNT) =============
@@ -92,7 +112,9 @@ module.exports = function(app, passport) {
 
   // google ---------------------------------
   // send to google to do the authentication
-  app.get('/connect/google', passport.authorize('google', { scope : ['profile', 'email'] }));
+  app.get('/connect/google', passport.authorize('google', { 
+    scope : ['profile', 'email'] 
+  }));
   // the callback after google has authorized the user
   app.get('/connect/google/callback',
     passport.authorize('google', {
@@ -100,6 +122,24 @@ module.exports = function(app, passport) {
       failureRedirect : '/'
     }
   ));
+
+  // reddit ---------------------------------
+  // send to reddit to do authorization
+  app.get('/connect/reddit', function(req, res, next){
+    req.session.state = crypto.randomBytes(32).toString('hex');
+    passport.authenticate('reddit', {
+      state     : req.session.state,
+      duration  : 'permanent',
+    })(req, res, next);
+  });
+
+  app.get('/connect/reddit/callback', function(req, res, next){
+  // Check for origin via state token
+    passport.authenticate('reddit', {
+      successRedirect: '/profile',
+      failureRedirect: '/'
+    })(req, res, next);
+  });
 
   // =============================================================================
   // UNLINK ACCOUNTS =============================================================
@@ -119,7 +159,15 @@ module.exports = function(app, passport) {
     var user          = req.user;
     user.google.token = undefined;
     user.save(function(err) {
-       res.redirect('/profile');
+      res.redirect('/profile');
+    });
+  });
+
+  app.get('/unlink/reddit', function(req, res) {
+    var user          = req.user;
+    user.reddit.token = undefined;
+    user.save(function(err) {
+      res.redirect('/profile');
     });
   });
 };
