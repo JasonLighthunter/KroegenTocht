@@ -75,7 +75,9 @@ module.exports = function(app, passport, crypto) {
     failureRedirect : '/'
   }));
 
-  // reddit ---------------------------------
+  // =====================================
+  // REDDIT ROUTES =======================
+  // =====================================
   // send to reddit to do authentication
   app.get('/auth/reddit', function(req, res, next){
     req.session.state = crypto.randomBytes(32).toString('hex');
