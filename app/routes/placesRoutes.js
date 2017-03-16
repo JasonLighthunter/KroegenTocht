@@ -48,20 +48,20 @@ function getNearbyBars(longitude, latitude, https) {
   https.request(options, callback).end();
 }
 
-module.exports = function(app, https) {
+module.exports = function(express, https) {
   //Middleware function to log request protocol
-  app.use('/locations', function (req, res, next) {
+  express.use('/locations', function (req, res, next) {
     console.log("A request for locations received at " + Date.now());
     next();
   });
 
-  app.use('/locations/getbars', function (req, res, next) {
+  express.use('/locations/getbars', function (req, res, next) {
     console.log("requesting bars");
     next();
   });
 
   //for location
-  app.get('/locations/getbars/:longitude/:latitude', function (req, res) {
+  express.get('/locations/getbars/:longitude/:latitude', function (req, res) {
     console.log(req.params.longitude);
     console.log(req.params.latitude);
     console.log("starting https request function.");

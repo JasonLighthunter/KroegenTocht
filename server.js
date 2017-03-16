@@ -1,7 +1,3 @@
-/**
- * Created by steve_000 on 06-Mar-17.
- */
-
 // server.js
 
 // set up ======================================================================
@@ -13,6 +9,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
 var https     = require('https');
+var crypto   = require('crypto');
 
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -39,11 +36,21 @@ app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secre
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
-
 // routes ======================================================================
-require('./app/placesCommunication.js')(app, https);
-require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
+require('./app/placesCommunication.js')(app, https);
+
+var mainRouter    = require('./app/routes/mainRoutes.js')(passport, crypto); // load our routes and pass in our app and fully configured passport
+var authRouter    = require('./app/routes/authRoutes.js')(passport, crypto);
+var connectRouter = require('./app/routes/connectRoutes.js')(passport, crypto);
+var unlinkRouter  = require('./app/routes/unlinkRoutes.js')();
+var testRouter    = require('./app/routes/trialRoutes.js')();
+
+app.use('/',        mainRouter);
+app.use('/auth',    authRouter);
+app.use('/connect', connectRouter);
+app.use('/unlink',  unlinkRouter);
+app.use('/test',    testRouter);
 
 // launch ======================================================================
 app.listen(port);
