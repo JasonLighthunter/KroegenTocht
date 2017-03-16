@@ -1,59 +1,54 @@
-/**
- * Created by steve_000 on 16-Mar-17.
- */
 var mongoose = require('mongoose');
-Place = mongoose.model("Place");
+Place        = mongoose.model("Place");
 
 const BASE_HOST = "maps.googleapis.com";
 const BASE_PATH = "/maps/api/place/nearbysearch/json";
-const BASE_URI = "&radius=5000&type=bar&key=AIzaSyC2PCxu3pWmK_jzWE9uyjxCFyuWU9WK3CM";
+const BASE_URI  = "&radius=5000&type=bar&key=AIzaSyC2PCxu3pWmK_jzWE9uyjxCFyuWU9WK3CM";
 
 //location=51.6897829,5.2620178&radius=5000&type=bar
 
-module.exports = function(app, https) {
+function getNearbyBars(longitude, latitude, https) {
+  var options = {
+    host   : BASE_HOST,
+    path   : BASE_PATH + "?location=" + longitude + "," + latitude + BASE_URI,
+    method : 'GET'
+  };
 
-  function getNearbyBars(longitude, lattitude) {
+  // console.log("logging https request URL:");
+  // console.log(options);
 
-    var options = {
-      host: BASE_HOST,
-      path: BASE_PATH + "?location=" + longitude + "," + lattitude + BASE_URI,
-      method: 'GET'
-    };
+  //callback method that reads the input and saves it to the database;
+  callback = function (res) {
+    var resultString = '';
 
-    // console.log("logging https request URL:");
-    // console.log(options);
+    //another chunk of data has been recieved, so append it to `resultString`
+    res.on('data', function (chunk) {
+      resultString += chunk;
+    });
 
-    //callback method that reads the input and saves it to the database;
-    callback = function (response) {
-      var str = '';
+    //the whole response has been recieved, save it to the database
+    res.on('end', function () {
 
-      //another chunk of data has been recieved, so append it to `str`
-      response.on('data', function (chunk) {
-        str += chunk;
-      });
+      console.log("parsing results to JSON");
+      var resultsJson = JSON.parse(resultString);
+      console.log("storing data to database");
+      resultsJson.results.forEach(function (res) {
 
-      //the whole response has been recieved, save it to the database
-      response.on('end', function () {
-
-        console.log("parsing results to JSON");
-        var resultsJson = JSON.parse(str);
-        console.log("storing data to database");
-        resultsJson.results.forEach(function (result) {
-
-          //checking if data doesn't already exist
-          Place.find({place_id : result.place_id}, function (err, docs) {
-            if (docs.length){
-              console.log('Name exists already');
-            }else{
-              new Place(result).save();
-            }
-          });
+        //checking if data doesn't already exist
+        Place.find({place_id : res.place_id}, function (err, documents) {
+          if (documents.length > 0) {
+            console.log('Name exists already');
+          } else {
+            new Place(res).save();
+          }
         });
       });
-    };
+    });
+  };
   https.request(options, callback).end();
 }
 
+module.exports = function(app, https) {
   //Middleware function to log request protocol
   app.use('/locations', function (req, res, next) {
     console.log("A request for locations received at " + Date.now());
@@ -70,7 +65,7 @@ module.exports = function(app, https) {
     console.log(req.params.longitude);
     console.log(req.params.latitude);
     console.log("starting https request function.");
-    getNearbyBars(req.params.longitude, req.params.latitude);
+    getNearbyBars(req.params.longitude, req.params.latitude, https);
     console.log("post request");
   });
-}
+};
