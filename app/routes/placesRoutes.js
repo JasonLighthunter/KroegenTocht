@@ -49,23 +49,29 @@ function getNearbyBars(longitude, latitude, https) {
 }
 
 module.exports = function(express, https) {
+
+  var router = express.Router();
+
   //Middleware function to log request protocol
-  express.use('/locations', function (req, res, next) {
+  router.use('/', function (req, res, next) {
     console.log("A request for locations received at " + Date.now());
     next();
   });
 
-  express.use('/locations/getbars', function (req, res, next) {
+  router.use('/getbars', function (req, res, next) {
     console.log("requesting bars");
     next();
   });
 
   //for location
-  express.get('/locations/getbars/:longitude/:latitude', function (req, res) {
+  router.get('/getbars/:longitude/:latitude', function (req, res) {
     console.log(req.params.longitude);
     console.log(req.params.latitude);
     console.log("starting https request function.");
     getNearbyBars(req.params.longitude, req.params.latitude, https);
     console.log("post request");
+    res.redirect("/");
   });
+
+  return router;
 };

@@ -38,18 +38,22 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 // routes ======================================================================
 
-require('./app/placesCommunication.js')(app, https);
+var mainRouter    = require('./app/routes/mainRoutes.js')(express, passport, crypto); // load our routes and pass in our app and fully configured passport
+var authRouter    = require('./app/routes/authRoutes.js')(express, passport, crypto);
+var connectRouter = require('./app/routes/connectRoutes.js')(express, passport, crypto);
+var unlinkRouter  = require('./app/routes/unlinkRoutes.js')(express);
 
-var mainRouter    = require('./app/routes/mainRoutes.js')(passport, crypto); // load our routes and pass in our app and fully configured passport
-var authRouter    = require('./app/routes/authRoutes.js')(passport, crypto);
-var connectRouter = require('./app/routes/connectRoutes.js')(passport, crypto);
-var unlinkRouter  = require('./app/routes/unlinkRoutes.js')();
-var testRouter    = require('./app/routes/trialRoutes.js')();
+var placesRouter  = require('./app/routes/placesRoutes.js')(express, https);
+
+var testRouter    = require('./app/routes/trialRoutes.js')(express);
 
 app.use('/',        mainRouter);
 app.use('/auth',    authRouter);
 app.use('/connect', connectRouter);
 app.use('/unlink',  unlinkRouter);
+
+app.use('/places', placesRouter);
+
 app.use('/test',    testRouter);
 
 // launch ======================================================================

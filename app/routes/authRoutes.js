@@ -1,7 +1,7 @@
-var express = require('express');
-var router  = express.Router();
+module.exports = function(express, passport, crypto) {
 
-module.exports = function(passport, crypto) {
+  var router = express.Router();
+
   // =====================================
   // Google ROUTES =======================
   // =====================================
