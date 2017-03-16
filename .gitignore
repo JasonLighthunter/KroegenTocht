@@ -1,2 +1,5 @@
-.nyc_output
-coverage
+.idea/
+config/
+node_modules/
+.nyc_output/
+coverage/

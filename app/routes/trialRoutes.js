@@ -1,7 +1,7 @@
-var express = require('express');
-var router  = express.Router();
+module.exports = function(express) {
 
-module.exports = function() {
+  var router = express.Router();
+
   router.get('/', function(req, res) {
     console.log('rootTest');
     var toReturn = 'root';

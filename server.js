@@ -8,6 +8,7 @@ var port     = process.env.PORT || 8080;
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
+var https     = require('https');
 var crypto   = require('crypto');
 
 var morgan       = require('morgan');
@@ -20,6 +21,7 @@ var configDB = require('./config/database.js');
 // configuration ===============================================================
 mongoose.connect(configDB.url); // connect to our database
 
+require('./app/models/place');
 require('./config/passport')(passport); // pass passport for configuration
 
 // set up our express application
@@ -35,17 +37,25 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 // routes ======================================================================
-var mainRouter    = require('./app/routes/mainRoutes.js')(passport, crypto); // load our routes and pass in our app and fully configured passport
-var authRouter    = require('./app/routes/authRoutes.js')(passport, crypto);
-var connectRouter = require('./app/routes/connectRoutes.js')(passport, crypto);
-var unlinkRouter  = require('./app/routes/unlinkRoutes.js')();
-var testRouter    = require('./app/routes/trialRoutes.js')();
+
+var mainRouter    = require('./app/routes/mainRoutes.js')(express, passport, crypto); // load our routes and pass in our app and fully configured passport
+var authRouter    = require('./app/routes/authRoutes.js')(express, passport, crypto);
+var connectRouter = require('./app/routes/connectRoutes.js')(express, passport, crypto);
+var unlinkRouter  = require('./app/routes/unlinkRoutes.js')(express);
+
+var placesRouter  = require('./app/routes/placesRoutes.js')(express, https);
+
+var testRouter    = require('./app/routes/trialRoutes.js')(express);
 
 app.use('/',        mainRouter);
 app.use('/auth',    authRouter);
 app.use('/connect', connectRouter);
 app.use('/unlink',  unlinkRouter);
+
+app.use('/places', placesRouter);
+
 app.use('/test',    testRouter);
+
 // launch ======================================================================
 app.listen(port);
 console.log('The magic happens on port ' + port);
