@@ -12,6 +12,7 @@ var port     = process.env.PORT || 8080;
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
+var https     = require('https');
 
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -39,7 +40,9 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 // routes ======================================================================
+require('./app/placesCommunication.js')(app, https);
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+
 
 // launch ======================================================================
 app.listen(port);
