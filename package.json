@@ -1,6 +1,10 @@
 {
   "name": "node-authentication",
   "main": "server.js",
+  "scripts": {
+    "start" : "node server.js",
+    "test"  : "mocha"
+  },
   "dependencies": {
     "bcrypt-nodejs": "latest",
     "body-parser": "~1.0.0",
@@ -17,5 +21,10 @@
     "passport-google-oauth": "~0.1.5",
     "passport-local": "~0.1.6",
     "passport-reddit": "^0.2.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "supertest": "^3.0.0"
   }
 }
