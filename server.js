@@ -2,14 +2,15 @@
 
 // set up ======================================================================
 // get all the tools we need
-var express  = require('express');
-var app      = express();
-var port     = process.env.PORT || 8080;
-var mongoose = require('mongoose');
-var passport = require('passport');
-var flash    = require('connect-flash');
-var crypto   = require('crypto');
+var express      = require('express');
+var app          = express();
+var port         = process.env.PORT || 8080;
 
+var mongoose     = require('mongoose');
+var passport     = require('passport');
+var connectRoles = require('connect-roles');
+var flash        = require('connect-flash');
+var crypto       = require('crypto');
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
@@ -20,7 +21,15 @@ var configDB = require('./config/database.js');
 // configuration ===============================================================
 mongoose.connect(configDB.url); // connect to our database
 
-require('./config/passport')(passport); // pass passport for configuration
+require('./config/passport')(passport);  // pass passport for configuration
+
+var user = new connectRoles({
+  failureHandler: function (req, res, action) {
+    res.send('Access Denied - You don\'t have permission to: ' + action);
+  }
+});
+
+var connectRolesUser = require('./config/roles')(user); // pass connect-roles for configuration
 
 // set up our express application
 app.use(morgan('dev')); // log every request to the console
@@ -34,12 +43,14 @@ app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secre
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
+
+app.use(connectRolesUser.middleware());
 // routes ======================================================================
 var mainRouter    = require('./app/routes/mainRoutes.js')(passport, crypto); // load our routes and pass in our app and fully configured passport
 var authRouter    = require('./app/routes/authRoutes.js')(passport, crypto);
 var connectRouter = require('./app/routes/connectRoutes.js')(passport, crypto);
 var unlinkRouter  = require('./app/routes/unlinkRoutes.js')();
-var testRouter    = require('./app/routes/trialRoutes.js')();
+var testRouter    = require('./app/routes/trialRoutes.js')(connectRolesUser);
 
 app.use('/',        mainRouter);
 app.use('/auth',    authRouter);
