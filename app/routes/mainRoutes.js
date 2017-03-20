@@ -1,12 +1,11 @@
-var express = require('express');
-var router  = express.Router();
+module.exports = function(express, passport, crypto) {
+  var router = express.Router();
 
-module.exports = function(passport, crypto) {
   router.get('/', function(req, res) {
     res.render('index.ejs');
   });
 
-  router.get('/profile', function(req, res) {
+  router.get('/profile', isLoggedIn, function(req, res) {
     res.render('profile.ejs', {
       user : req.user
     });

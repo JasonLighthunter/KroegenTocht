@@ -1,9 +1,9 @@
-var express = require('express');
-var router  = express.Router();
+module.exports = function(express, passport, crypto) {
 
-module.exports = function(passport, crypto) {
+  var router = express.Router();
+
   router.get('/local', function(req, res) {
-    res.render('connect-local.ejs', { 
+    res.render('connect-local.ejs', {
       message : req.flash('loginMessage') 
     });
   });
