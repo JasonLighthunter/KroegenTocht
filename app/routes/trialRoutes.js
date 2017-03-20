@@ -1,4 +1,4 @@
-module.exports = function(express) {
+module.exports = function(express, user) {
 
   var router = express.Router();
 
@@ -15,6 +15,11 @@ module.exports = function(express) {
 
   router.get('/test2', function(req, res) {
     var toReturn = 'test2';
+    res.send(toReturn);
+  });
+
+  router.get('/secret', user.can('see secret page'), function(req, res) {
+    var toReturn = 'illuminati is real!!!1!!';
     res.send(toReturn);
   });
 

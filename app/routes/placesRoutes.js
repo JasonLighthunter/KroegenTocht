@@ -1,10 +1,13 @@
-var mongoose = require('mongoose');
-Place        = mongoose.model("Place");
-
 const BASE_HOST = "maps.googleapis.com";
 const BASE_PATH = "/maps/api/place/nearbysearch/json";
 const BASE_URI  = "&radius=5000&type=bar&key=AIzaSyC2PCxu3pWmK_jzWE9uyjxCFyuWU9WK3CM";
 
+require('../models/place');
+
+var mongoose = require('mongoose');
+Place        = mongoose.model("Place");
+
+//testgegevens
 //location=51.6897829,5.2620178&radius=5000&type=bar
 
 function getNearbyBars(longitude, latitude, https) {

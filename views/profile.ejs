@@ -77,6 +77,9 @@
             <% } %>
           </div>
         </div>
+        <% if (userCan('see secret page')) { %>
+          <a href="/test/secret" class="btn btn-primary">THE SECRET</a>
+        <% } %> 
       </div>
     </div>
   </body>
