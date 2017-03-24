@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="211fbf97-2385-4977-ab6e-1c5a9e866460" name="Default" comment="" />
+    <list default="true" id="211fbf97-2385-4977-ab6e-1c5a9e866460" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/views/signupsucces.ejs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/routes/mainRoutes.js" afterPath="$PROJECT_DIR$/app/routes/mainRoutes.js" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,8 +32,8 @@
       <file leaf-file-name="placesRoutes.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/routes/placesRoutes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-136">
-              <caret line="10" column="52" lean-forward="true" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
+            <state relative-caret-position="17">
+              <caret line="10" column="52" lean-forward="false" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -79,21 +83,6 @@
       </file>
     </leaf>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="JavaScript File" />
-      </list>
-    </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>redd</find>
-      <find>longi</find>
-      <find>isL</find>
-      <find>isLog</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -127,7 +116,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1616" />
+    <option name="width" value="1612" />
     <option name="height" value="876" />
   </component>
   <component name="ProjectView">
@@ -145,8 +134,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -225,6 +212,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -235,12 +224,6 @@
     <property name="nodejs_interpreter_path" value="C:/Program Files (x86)/nodejs/node" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="nodejs.mocha.mocha_node_package_dir" value="C:\Users\steve_000\Downloads\111Temporary\GitRepositories\KroegenTocht\node_modules\mocha" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\steve_000\Downloads\111Temporary\GitRepositories\KroegenTocht\app\routes" />
-      <recent name="C:\Users\steve_000\Downloads\111Temporary\GitRepositories\KroegenTocht\app" />
-    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
@@ -321,18 +304,19 @@
       <workItem from="1489665148485" duration="135000" />
       <workItem from="1489665300887" duration="11806000" />
       <workItem from="1489998276695" duration="2904000" />
-      <workItem from="1490348704536" duration="647000" />
+      <workItem from="1490348704536" duration="1049000" />
+      <workItem from="1490349758364" duration="4000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16180000" />
+    <option name="totallyTimeSpent" value="16586000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1612" height="876" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10964912" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -418,12 +402,6 @@
           <caret line="8" column="21" lean-forward="false" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
           <folding>
             <marker date="1489999665213" expanded="true" signature="89:1067" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="280:323" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="401:472" ph="{&quot;successRedirect&quot;: '/profile'...}" />
-            <marker date="1489999665213" expanded="true" signature="657:853" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="759:831" ph="{&quot;state&quot;: req.session.state...}" />
-            <marker date="1489999665213" expanded="true" signature="914:1045" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="952:1023" ph="{&quot;successRedirect&quot;: '/profile'...}" />
           </folding>
         </state>
       </provider>
@@ -642,12 +620,6 @@
           <caret line="8" column="21" lean-forward="false" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
           <folding>
             <marker date="1489999665213" expanded="true" signature="89:1067" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="280:323" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="401:472" ph="{&quot;successRedirect&quot;: '/profile'...}" />
-            <marker date="1489999665213" expanded="true" signature="657:853" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="759:831" ph="{&quot;state&quot;: req.session.state...}" />
-            <marker date="1489999665213" expanded="true" signature="914:1045" ph="{...}" />
-            <marker date="1489999665213" expanded="true" signature="952:1023" ph="{&quot;successRedirect&quot;: '/profile'...}" />
           </folding>
         </state>
       </provider>
@@ -662,8 +634,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/routes/placesRoutes.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-136">
-          <caret line="10" column="52" lean-forward="true" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
+        <state relative-caret-position="17">
+          <caret line="10" column="52" lean-forward="false" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
           <folding />
         </state>
       </provider>
