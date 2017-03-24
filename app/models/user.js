@@ -21,7 +21,8 @@ var userSchema = mongoose.Schema({
     id       : String,
     token    : String,
     username : String
-  }
+  },
+  isPureSocialAccount : Boolean
 });
 
 // methods ======================

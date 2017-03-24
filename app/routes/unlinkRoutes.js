@@ -2,16 +2,6 @@ module.exports = function(express) {
 
   var router = express.Router();
 
-  router.get('/local', function(req, res) {
-    var user            = req.user;
-    user.local.email    = undefined;
-    user.local.password = undefined;
-    user.save(function(err) {
-      res.redirect('/profile');
-    });
-  });
-
-    // google ---------------------------------
   router.get('/google', function(req, res) {
     var user          = req.user;
     user.google.token = undefined;
