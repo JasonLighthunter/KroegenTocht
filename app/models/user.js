@@ -7,6 +7,7 @@ var _        = require('underscore');
 // define the schema for our user model
 var userSchema = mongoose.Schema({
   roles  : [String],
+  races  : [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Race'}],
   local  : {
     email    : String,
     password : String

@@ -27,7 +27,7 @@ require('./config/passport')(passport);  // pass passport for configuration
 
 var user = new connectRoles({
   failureHandler: function (req, res, action) {
-    res.send('Access Denied - You don\'t have permission to: ' + action);
+    res.send('Access Denied - You don\'t have permission to do that');
   }
 });
 
@@ -50,22 +50,25 @@ app.use(connectRolesUser.middleware());
 // routes ======================================================================
 
 
-var mainRouter    = require('./app/routes/mainRoutes.js')(express, passport, crypto); // load our routes and pass in our app and fully configured passport
+var mainRouter    = require('./app/routes/mainRoutes.js')(express, passport, crypto, connectRolesUser); // load our routes and pass in our app and fully configured passport
 var authRouter    = require('./app/routes/authRoutes.js')(express, passport, crypto);
 var connectRouter = require('./app/routes/connectRoutes.js')(express, passport, crypto);
 var unlinkRouter  = require('./app/routes/unlinkRoutes.js')(express);
 
 var placesRouter  = require('./app/routes/placesRoutes.js')(express, https);
+var racesRouter   = require('./app/routes/raceRoutes')(express, connectRolesUser);
+var usersRouter   = require('./app/routes/userRoutes')(express, racesRouter);
 
 var testRouter    = require('./app/routes/trialRoutes.js')(express, connectRolesUser);
-
 
 app.use('/',        mainRouter);
 app.use('/auth',    authRouter);
 app.use('/connect', connectRouter);
 app.use('/unlink',  unlinkRouter);
 
-app.use('/places', placesRouter);
+app.use('/places',  placesRouter);
+app.use('/races',   racesRouter);
+app.use('/users',   usersRouter);
 
 app.use('/test',    testRouter);
 

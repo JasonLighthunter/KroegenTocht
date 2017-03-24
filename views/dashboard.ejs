@@ -1,0 +1,33 @@
+<!-- views/dashboard.ejs -->
+<!doctype html>
+<html>
+  <head>
+    <title>Node Authentication</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <style>
+      body { padding-top:80px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1> Manage Races </h1>
+      <h2> My Races </h2>
+        <div class="well">
+          <% if (!user.races || user.races.length <= 0) { -%>
+            You do not participate in any races.
+          <% } else { -%>
+            *Insert your races here*
+          <% } -%>
+        </div>
+      <h2> Availible Races </h2>
+        <div class="well">
+          <% if (!races || races.length <= 0) { -%>
+            There are no ongoing races.
+          <% } else { -%>
+            *Insert availible races here*
+          <% } -%>
+        </div>
+    </div>
+  </body>
+</html>

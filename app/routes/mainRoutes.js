@@ -1,4 +1,4 @@
-module.exports = function(express, passport, crypto) {
+module.exports = function(express, passport, crypto, user) {
   var router = express.Router();
 
   router.get('/', function(req, res) {
@@ -6,9 +6,7 @@ module.exports = function(express, passport, crypto) {
   });
 
   router.get('/profile', isLoggedIn, function(req, res) {
-    res.render('profile.ejs', {
-      user : req.user
-    });
+    res.redirect('/users/' + req.user.id);
   });
 
   router.get('/logout', function(req, res) {
@@ -23,7 +21,7 @@ module.exports = function(express, passport, crypto) {
     });
   });
 
-  router.post('/login', 
+  router.post('/login',
     passport.authenticate('local-login', {
       successRedirect : '/profile', // redirect to the secure profile section
       failureRedirect : '/login',   // redirect back to the signup page if there is an error
@@ -40,15 +38,15 @@ module.exports = function(express, passport, crypto) {
   // process the signup form
   router.post('/signup', 
     passport.authenticate('local-signup', {
-      successRedirect : '/signupsucces', // redirect to the secure profile section
+      successRedirect : '/signup-success', // redirect to the secure profile section
       failureRedirect : '/signup',  // redirect back to the signup page if there is an error
       failureFlash    : true        // allow flash messages
     })
   );
 
-  router.get('/signupsucces', function(req, res) {
+  router.get('/signup-success', function(req, res) {
     req.logout();
-    res.render('signupsucces.ejs');
+    res.render('signupSuccess.ejs');
   });
 
   return router;
