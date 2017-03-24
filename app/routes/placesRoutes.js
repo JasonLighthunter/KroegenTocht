@@ -1,54 +1,112 @@
-const BASE_HOST = "maps.googleapis.com";
-const BASE_PATH = "/maps/api/place/nearbysearch/json";
-const BASE_URI  = "&radius=5000&type=bar&key=AIzaSyC2PCxu3pWmK_jzWE9uyjxCFyuWU9WK3CM";
+const BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
+const BASE_URI  = "&radius=5000&type=bar";
+const APIKEY = "&key=AIzaSyC2PCxu3pWmK_jzWE9uyjxCFyuWU9WK3CM";
 
-require('../models/place');
-
-var mongoose = require('mongoose');
-Place        = mongoose.model("Place");
+var _ = require('underscore');
 
 //testgegevens
-//location=51.6897829,5.2620178&radius=5000&type=bar
+//location=51.6897829,5.2620178
+//longitude = 51.6897829
+//latitude = 5.2620178
 
-function getNearbyBars(longitude, latitude, https) {
-  var options = {
-    host   : BASE_HOST,
-    path   : BASE_PATH + "?location=" + longitude + "," + latitude + BASE_URI,
-    method : 'GET'
-  };
+function getNearbyBars(longitude, latitude, https, req) {
 
-  // console.log("logging https request URL:");
-  // console.log(options);
+  var deferred = Promise.defer();
 
-  //callback method that reads the input and saves it to the database;
-  callback = function (res) {
-    var resultString = '';
+  https.get(BASE_URL + "?location=" + longitude + "," + latitude + BASE_URI + APIKEY, function(response) {
 
-    //another chunk of data has been recieved, so append it to `resultString`
-    res.on('data', function (chunk) {
-      resultString += chunk;
+
+    var responseBody = "";  // will hold the response body as it comes
+
+    // join the data chuncks as they come
+    response.on('data', function(chunck) { responseBody += chunck });
+
+
+    response.on('end', function() {
+      console.log("parsing results to JSON");
+      var jsonResponse = JSON.parse(responseBody);
+
+      console.log("Status:" +jsonResponse.status)
+
+      console.log("storing data to database");
+
+      console.log(req.session.places[0]);
+      console.log(jsonResponse.results[0]);
+
+      jsonResponse.results.forEach(function (res) {
+        //checking if data doesn't already exist
+        if(!(_.contains(req.session.placesIds, res.id))){
+          req.session.places.push(res);
+          req.session.placesIds.push(res.id);
+          console.log("session");
+        } else{
+          console.log("no session");
+        }
+      });
+
+      if(jsonResponse.next_page_token) {
+        setTimeout(
+        function() {
+          nextGooglePlacesHttpsRequest(jsonResponse.next_page_token, https, req)
+            .then(function () {
+              deferred.resolve();
+            })
+        }, 1500);
+      }
+      else {
+        deferred.resolve();
+      }
     });
+  })
 
-    //the whole response has been recieved, save it to the database
-    res.on('end', function () {
+  return deferred.promise;
+}
+
+function nextGooglePlacesHttpsRequest(nextPageToken, https, req) {
+
+  var deferred = Promise.defer();
+
+  https.get(BASE_URL + "?pagetoken=" + nextPageToken + APIKEY, function(response) {
+
+    var responseBody = "";  // will hold the response body as it comes
+
+    // join the data chuncks as they come
+    response.on('data', function(chunck) { responseBody += chunck });
+
+    response.on('end', function() {
 
       console.log("parsing results to JSON");
-      var resultsJson = JSON.parse(resultString);
-      console.log("storing data to database");
-      resultsJson.results.forEach(function (res) {
+      var jsonResponse = JSON.parse(responseBody);
 
+      console.log("storing data to database");
+
+      jsonResponse.results.forEach(function (res) {
         //checking if data doesn't already exist
-        Place.find({place_id : res.place_id}, function (err, documents) {
-          if (documents.length > 0) {
-            console.log('Name exists already');
-          } else {
-            new Place(res).save();
-          }
-        });
+        if(!(_.contains(req.session.placesIds, res.id))){
+          req.session.places.push(res);
+          req.session.placesIds.push(res.id);
+          console.log("session");
+        } else{
+          console.log("no session");
+        }
       });
+
+      if(jsonResponse.next_page_token) {
+        setTimeout(
+          function() {
+            nextGooglePlacesHttpsRequest(jsonResponse.next_page_token, https, req)
+              .then(function () {
+                deferred.resolve();
+              })
+          }, 1500);
+      }
+      else {
+        deferred.resolve();
+      }
     });
-  };
-  https.request(options, callback).end();
+  });
+
+  return deferred.promise;
 }
 
 module.exports = function(express, https) {
@@ -71,9 +129,13 @@ module.exports = function(express, https) {
     console.log(req.params.longitude);
     console.log(req.params.latitude);
     console.log("starting https request function.");
-    getNearbyBars(req.params.longitude, req.params.latitude, https);
-    console.log("post request");
-    res.redirect("/");
+    if(!req.session.places){
+      req.session.places = [];
+    }
+    if(!req.session.placesIds){
+      req.session.placesIds = [];
+    }
+    getNearbyBars(req.params.longitude, req.params.latitude, https, req).then(function(){res.json(req.session.places)});
   });
 
   return router;
