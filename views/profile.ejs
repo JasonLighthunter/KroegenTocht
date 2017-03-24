@@ -23,7 +23,7 @@
         <div class="col-sm-6">
           <div class="well">
             <h3 class="text-danger">
-              <span class="fa fa-google-plus"></span> sGoogle+
+              <span class="fa fa-google-plus"></span> Google+
             </h3>
             <!-- check if the user has this token (is the user authenticated with this social account) -->
             <% if (user.google.token) { %>
@@ -59,24 +59,23 @@
           </div>
         </div>
         <!-- LOCAL INFORMATION -->
-        <div class="col-sm-6">
-          <div class="well">
-            <h3>
-              <span class="fa fa-user"></span> Local
-            </h3>
-            
-            <% if (user.local.email) { %>
+        <% if (user.local.email) { %>
+          <div class="col-sm-6">
+            <div class="well">
+             
+              <h3>
+                <span class="fa fa-user"></span> Local
+              </h3>
+
               <p>
                 <strong>id</strong>:       <%= user._id %><br>
                 <strong>email</strong>:    <%= user.local.email %><br>
                 <strong>password</strong>: <%= user.local.password %>
               </p>
-              <a href="/unlink/local" class="btn btn-default">Unlink</a>
-            <% } else { %>
-              <a href="/connect/local" class="btn btn-default">Connect Local</a>
-            <% } %>
+            
+            </div>
           </div>
-        </div>
+        <% } %>
         <% if (userCan('see secret page')) { %>
           <a href="/test/secret" class="btn btn-primary">THE SECRET</a>
         <% } %> 
