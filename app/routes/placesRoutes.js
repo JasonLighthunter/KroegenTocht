@@ -11,102 +11,104 @@ var _ = require('underscore');
 
 function getNearbyBars(longitude, latitude, https, req) {
 
-  var deferred = Promise.defer();
+  //var deferred = Promise.defer();
 
-  https.get(BASE_URL + "?location=" + longitude + "," + latitude + BASE_URI + APIKEY, function(response) {
-
-
-    var responseBody = "";  // will hold the response body as it comes
-
-    // join the data chuncks as they come
-    response.on('data', function(chunck) { responseBody += chunck });
+  return new Promise(function(resolve, reject) {
+    https.get(BASE_URL + "?location=" + longitude + "," + latitude + BASE_URI + APIKEY, function(response) {
 
 
-    response.on('end', function() {
-      console.log("parsing results to JSON");
-      var jsonResponse = JSON.parse(responseBody);
+      var responseBody = "";  // will hold the response body as it comes
 
-      console.log("Status:" +jsonResponse.status)
+      // join the data chuncks as they come
+      response.on('data', function(chunck) { responseBody += chunck });
 
-      console.log("storing data to database");
 
-      console.log(req.session.places[0]);
-      console.log(jsonResponse.results[0]);
+      response.on('end', function() {
+        console.log("parsing results to JSON");
+        var jsonResponse = JSON.parse(responseBody);
 
-      jsonResponse.results.forEach(function (res) {
-        //checking if data doesn't already exist
-        if(!(_.contains(req.session.placesIds, res.id))){
-          req.session.places.push(res);
-          req.session.placesIds.push(res.id);
-          console.log("session");
-        } else{
-          console.log("no session");
+        console.log("Status:" +jsonResponse.status)
+
+        console.log("storing data to database");
+
+        console.log(req.session.places[0]);
+        console.log(jsonResponse.results[0]);
+
+        jsonResponse.results.forEach(function (res) {
+          //checking if data doesn't already exist
+          if(!(_.contains(req.session.placesIds, res.id))){
+            req.session.places.push(res);
+            req.session.placesIds.push(res.id);
+            console.log("session");
+          } else{
+            console.log("no session");
+          }
+        });
+
+        if(jsonResponse.next_page_token) {
+          setTimeout(
+            function() {
+              nextGooglePlacesHttpsRequest(jsonResponse.next_page_token, https, req)
+                .then(function () {
+                  resolve();
+                })
+            }, 1500);
+        }
+        else {
+          resolve();
         }
       });
+    })
+  });
 
-      if(jsonResponse.next_page_token) {
-        setTimeout(
-        function() {
-          nextGooglePlacesHttpsRequest(jsonResponse.next_page_token, https, req)
-            .then(function () {
-              deferred.resolve();
-            })
-        }, 1500);
-      }
-      else {
-        deferred.resolve();
-      }
-    });
-  })
-
-  return deferred.promise;
+  //return deferred.promise;
 }
 
 function nextGooglePlacesHttpsRequest(nextPageToken, https, req) {
 
-  var deferred = Promise.defer();
 
-  https.get(BASE_URL + "?pagetoken=" + nextPageToken + APIKEY, function(response) {
+  return new Promise(function(resolve, reject) {
+    https.get(BASE_URL + "?pagetoken=" + nextPageToken + APIKEY, function(response) {
 
-    var responseBody = "";  // will hold the response body as it comes
+      var responseBody = "";  // will hold the response body as it comes
 
-    // join the data chuncks as they come
-    response.on('data', function(chunck) { responseBody += chunck });
+      // join the data chuncks as they come
+      response.on('data', function(chunck) { responseBody += chunck });
 
-    response.on('end', function() {
+      response.on('end', function() {
 
-      console.log("parsing results to JSON");
-      var jsonResponse = JSON.parse(responseBody);
+        console.log("parsing results to JSON");
+        var jsonResponse = JSON.parse(responseBody);
 
-      console.log("storing data to database");
+        console.log("storing data to database");
 
-      jsonResponse.results.forEach(function (res) {
-        //checking if data doesn't already exist
-        if(!(_.contains(req.session.placesIds, res.id))){
-          req.session.places.push(res);
-          req.session.placesIds.push(res.id);
-          console.log("session");
-        } else{
-          console.log("no session");
+        jsonResponse.results.forEach(function (res) {
+          //checking if data doesn't already exist
+          if(!(_.contains(req.session.placesIds, res.id))){
+            req.session.places.push(res);
+            req.session.placesIds.push(res.id);
+            console.log("session");
+          } else{
+            console.log("no session");
+          }
+        });
+
+        if(jsonResponse.next_page_token) {
+          setTimeout(
+            function() {
+              nextGooglePlacesHttpsRequest(jsonResponse.next_page_token, https, req)
+                .then(function () {
+                  resolve();
+                })
+            }, 1500);
+        }
+        else {
+          resolve();
         }
       });
-
-      if(jsonResponse.next_page_token) {
-        setTimeout(
-          function() {
-            nextGooglePlacesHttpsRequest(jsonResponse.next_page_token, https, req)
-              .then(function () {
-                deferred.resolve();
-              })
-          }, 1500);
-      }
-      else {
-        deferred.resolve();
-      }
     });
   });
 
-  return deferred.promise;
 }
 
 module.exports = function(express, https) {
