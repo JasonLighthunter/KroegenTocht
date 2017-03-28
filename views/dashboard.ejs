@@ -11,23 +11,22 @@
   </head>
   <body>
     <div class="container">
-      <h1> Manage Races </h1>
-      <h2> My Races </h2>
-        <div class="well">
-          <% if (!user.races || user.races.length <= 0) { -%>
-            You do not participate in any races.
-          <% } else { -%>
-            *Insert your races here*
-          <% } -%>
-        </div>
-      <h2> Availible Races </h2>
-        <div class="well">
-          <% if (!races || races.length <= 0) { -%>
-            There are no ongoing races.
-          <% } else { -%>
-            *Insert availible races here*
-          <% } -%>
-        </div>
+      <!-- Participation -->
+      
+      <!-- whitelisting -->
+      <% if (userCan('whitelist bars')) { %>
+        <h1> Manage Bars</h1>
+        <h2> Whitelisted Bars </h2>
+        <!-- whitelisted bars from /bars -->
+        <h2> Availible bars </h2>
+        <div class="google-places-list"></div>
+      <% } %>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+      $.get("http://localhost:8080/races", function(data, status) {
+
+      });
+    </script>
   </body>
 </html>
