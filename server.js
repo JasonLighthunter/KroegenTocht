@@ -6,6 +6,7 @@ var express      = require('express');
 var app          = express();
 var port         = process.env.PORT || 8080;
 
+var path         = require('path');
 var mongoose     = require('mongoose');
 var passport     = require('passport');
 var connectRoles = require('connect-roles');
@@ -63,6 +64,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 
 app.set('view engine', 'ejs'); // set up ejs for templating
+app.use(express.static(path.join(__dirname, 'public')));
 
 // required for passport
 app.use(session({ secret: 'ilovescotchscotchyscotchscotch', placesIds: [], places: []})); // session secret

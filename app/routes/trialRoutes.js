@@ -4,7 +4,6 @@ module.exports = function(express, user) {
 
   /**
    * @swagger
-   * definition:
    *   Puppy:
    *     properties:
    *       name:
@@ -66,6 +65,11 @@ module.exports = function(express, user) {
   router.get('/secret', user.can('see secret page'), function(req, res) {
     var toReturn = 'illuminati is real!!!1!!';
     res.send(toReturn);
+  });
+
+  router.get('/testplaces', function(req, res) {
+    var data = req.session.places;
+    res.send(data);
   });
 
   return router;
