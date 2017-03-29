@@ -68,7 +68,7 @@
           if ( $(".new-table").children().length <= 0 ) {
             console.log("places is empty fetching live from google");
 
-            $.get("http://localhost:8080/places/getbars/51.6897829/5.2620178", function(data, status) {
+            $.get("http://localhost:8080/places?longitude=51.6897829&latitude=5.2620178", function(data, status) {
 
               $.each(data, function(i, item) {
                 if($.inArray(data[i].name, whitelistedBars) === -1) {
@@ -103,7 +103,7 @@
           var psId   =     $(this).parent().siblings(".places-id").html();
           var newBarName = $(this).parent().siblings(".places-name").html();
           var row        = $(this).parent().parent();
-          $.post("http://localhost:8080/bars", {name: newBarName, placesId: psId }, function() {
+          $.post("http://localhost:8080/bars", {name: newBarName, place_Id: psId }, function() {
             row.fadeOut();
             location.reload();
           });
