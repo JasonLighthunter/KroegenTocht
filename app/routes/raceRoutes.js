@@ -5,6 +5,35 @@ module.exports = function(express, user) {
 
   var router = express.Router({ mergeParams: true });
 
+  /**
+   * @swagger
+   * definition:
+   *   Race:
+   *    properties:
+   *      testString:
+   *        type: string
+   *      boolean:
+   *        type: boolean
+   *      age:
+   *        type: int
+   *
+   */
+
+  /**
+   * @swagger
+   * /races:
+   *   get:
+   *     tags:
+   *       - Races
+   *     description: Gets all races from the database and returns them as a json array
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: An array of races
+   *         schema:
+   *           $ref: '#/definitions/Race'
+   */
   router.get('/', function(req, res, next) {
     if (req.params.userId) {
       next('route');
@@ -39,6 +68,28 @@ module.exports = function(express, user) {
     });
   });
 
+  /**
+   * @swagger
+   * /races/{user_id}:
+   *   get:
+   *     tags:
+   *       - Races
+   *     description: Gets all races from  a specific user from the database and returns them as a json array
+   *     parameters:
+   *       id:
+   *         name: user_id
+   *         in: path
+   *         description: id of user
+   *         required: true
+   *         type: string
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: An array of races
+   *         schema:
+   *           $ref: '#/definitions/Race'
+   */
   router.get('/:raceId', user.can('access private race(s)'), function(req, res, next) {
     var searchResult = User.findById(req.params.userId)
                            .populate('races');
