@@ -26,6 +26,12 @@ module.exports = function(express, user) {
    *     tags:
    *       - Races
    *     description: Gets all races from the database and returns them as a json array
+   *     parameters:
+   *     - name: name
+   *       in: query
+   *       description: name of race
+   *       required: false
+   *       type: string
    *     produces:
    *       - application/json
    *     responses:
@@ -41,7 +47,17 @@ module.exports = function(express, user) {
       next();
     }
   }, function(req, res, next) {
-    Race.find(function(err, races) {
+
+    var searchResult = Race.find();
+    if(req.query.name) {
+      searchResult = searchResult.byName(req.query.name);
+    }
+
+    if(req.query.active!==undefined){
+      searchResult = searchResult.byActive(req.query.active);
+    }
+
+    searchResult.exec(function(err, races){
       res.json(races); 
     });
   });
@@ -50,12 +66,37 @@ module.exports = function(express, user) {
     var searchResult = User.findById(req.params.userId)
                            .populate('races');
 
+    if(req.query.name){
+      searchResult = searchResult.byName(req.query.name)
+    }
+
     searchResult.exec(function(err, user) {
       res.json(user.races);
     });
   });
 
   //if he parameter userId is set handle the second route,
+  /**
+   * @swagger
+   * /races/{race_id}:
+   *   get:
+   *     tags:
+   *       - Races
+   *     description: Gets all races from  a specific user from the database and returns them as a json array
+   *     parameters:
+   *     - name: race_id
+   *       in: path
+   *       description: id of race
+   *       required: true
+   *       type: string
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: An array of races
+   *         schema:
+   *           $ref: '#/definitions/Race'
+   */
   router.get('/:raceId', function(req, res, next) {
     if (req.params.userId) {
       next('route');
@@ -68,28 +109,6 @@ module.exports = function(express, user) {
     });
   });
 
-  /**
-   * @swagger
-   * /races/{user_id}:
-   *   get:
-   *     tags:
-   *       - Races
-   *     description: Gets all races from  a specific user from the database and returns them as a json array
-   *     parameters:
-   *       id:
-   *         name: user_id
-   *         in: path
-   *         description: id of user
-   *         required: true
-   *         type: string
-   *     produces:
-   *       - application/json
-   *     responses:
-   *       200:
-   *         description: An array of races
-   *         schema:
-   *           $ref: '#/definitions/Race'
-   */
   router.get('/:raceId', user.can('access private race(s)'), function(req, res, next) {
     var searchResult = User.findById(req.params.userId)
                            .populate('races');

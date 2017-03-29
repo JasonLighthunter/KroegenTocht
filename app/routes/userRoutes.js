@@ -4,7 +4,7 @@ module.exports = function(express, racesRouter) {
 
   /**
    * @swagger
-   * /user:
+   * /users:
    *   get:
    *     tags:
    *       - User
@@ -21,7 +21,7 @@ module.exports = function(express, racesRouter) {
 
   /**
    * @swagger
-   * /user/{user_id}:
+   * /users/{user_id}:
    *   get:
    *     tags:
    *       - User
@@ -44,7 +44,7 @@ module.exports = function(express, racesRouter) {
 
   /**
    * @swagger
-   * /user/{user_id}/races:
+   * /users/{user_id}/races:
    *   get:
    *     tags:
    *       - User

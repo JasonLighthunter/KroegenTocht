@@ -1,5 +1,4 @@
 const BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-const BASE_URI  = "&radius=5000&type=bar";
 const APIKEY = "&key=AIzaSyC2PCxu3pWmK_jzWE9uyjxCFyuWU9WK3CM";
 
 var _ = require('underscore');
@@ -9,12 +8,12 @@ var _ = require('underscore');
 //longitude = 51.6897829
 //latitude = 5.2620178
 
-function getNearbyBars(longitude, latitude, https, req) {
+function getNearbyBars(longitude, latitude, radius, type, https, req) {
 
-  //var deferred = Promise.defer();
+  console.log("Sending request with the folowing parameters: (location=" + longitude + "," + latitude + "&radius=" + radius + "&type=" + type + ").");
 
   return new Promise(function(resolve, reject) {
-    https.get(BASE_URL + "?location=" + longitude + "," + latitude + BASE_URI + APIKEY, function(response) {
+    https.get(BASE_URL + "?location=" + longitude + "," + latitude + "&radius=" + radius + "&type=" + type + APIKEY, function(response) {
 
 
       var responseBody = "";  // will hold the response body as it comes
@@ -31,17 +30,12 @@ function getNearbyBars(longitude, latitude, https, req) {
 
         console.log("storing data to database");
 
-        console.log(req.session.places[0]);
-        console.log(jsonResponse.results[0]);
 
         jsonResponse.results.forEach(function (res) {
           //checking if data doesn't already exist
           if(!(_.contains(req.session.placesIds, res.id))){
             req.session.places.push(res);
             req.session.placesIds.push(res.id);
-            console.log("session");
-          } else{
-            console.log("no session");
           }
         });
 
@@ -87,9 +81,6 @@ function nextGooglePlacesHttpsRequest(nextPageToken, https, req) {
           if(!(_.contains(req.session.placesIds, res.id))){
             req.session.places.push(res);
             req.session.placesIds.push(res.id);
-            console.log("session");
-          } else{
-            console.log("no session");
           }
         });
 
@@ -120,12 +111,6 @@ module.exports = function(express, https) {
     console.log("A request for locations received at " + Date.now());
     next();
   });
-
-  router.use('/getbars', function (req, res, next) {
-    console.log("requesting bars");
-    next();
-  });
-
 
   /**
    * @swagger
@@ -165,11 +150,36 @@ module.exports = function(express, https) {
 
   /**
    * @swagger
-   * /places/getbars/longitude/latitude:
+   * /places:
    *   get:
    *     tags:
    *       - Places
    *     description: Gets the 60 nearest bars within a radius of 5 kilometer form the google places API and returns them as a json array
+   *     parameters:
+   *     - name: longitude
+   *       in: query
+   *       description: longitude of search center
+   *       required: true
+   *       type: number
+   *       format: float
+   *     - name: latitude
+   *       in: query
+   *       description: latitude of search center
+   *       required: true
+   *       type: number
+   *       format: float
+   *     - name: radius
+   *       in: query
+   *       description: search radius in meters
+   *       required: false
+   *       type: integer
+   *       format: int32
+   *     - name: type
+   *       in: query
+   *       description: target of search
+   *       required: false
+   *       type: integer
+   *       format: int32
    *     produces:
    *       - application/json
    *     responses:
@@ -179,17 +189,35 @@ module.exports = function(express, https) {
    *           $ref: '#/definitions/Bar'
    */
   //for location
-  router.get('/getbars/:longitude/:latitude', function (req, res) {
-    console.log(req.params.longitude);
-    console.log(req.params.latitude);
-    console.log("starting https request function.");
-    if(!req.session.places){
-      req.session.places = [];
+  router.get('/', function (req, res) {
+
+    if(req.query.longitude && req.query.latitude) {
+
+
+      var radius = 5000;
+      if(req.query.radius){
+        radius = req.query.radius
+      }
+      var type = "bar";
+      if(req.query.type){
+        radius = req.query.type
+      }
+
+      if (!req.session.places) {
+        req.session.places = [];
+      }
+      if (!req.session.placesIds) {
+        req.session.placesIds = [];
+      }
+      getNearbyBars(req.query.longitude, req.query.latitude, radius, type, https, req).then(function () {
+        res.json(req.session.places)
+      });
+    } else {
+      res.json({
+        Status: "Failure",
+        Message: "The required parameters longitude and latitude were not given."
+      });
     }
-    if(!req.session.placesIds){
-      req.session.placesIds = [];
-    }
-    getNearbyBars(req.params.longitude, req.params.latitude, https, req).then(function(){res.json(req.session.places)});
   });
 
   return router;
