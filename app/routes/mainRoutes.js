@@ -159,6 +159,10 @@ module.exports = function(express, passport, crypto, user) {
     res.render('signupSuccess.ejs');
   });
 
+  router.get('/dashboard', isLoggedIn, function(req, res) {
+    res.render('dashboard.ejs', { places: req.session.places });
+  });
+
   return router;
 };
 
