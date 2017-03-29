@@ -52,7 +52,7 @@ function getNearbyBars(longitude, latitude, https, req) {
                 .then(function () {
                   resolve();
                 })
-            }, 1500);
+            }, 2000);
         }
         else {
           resolve();
@@ -100,7 +100,7 @@ function nextGooglePlacesHttpsRequest(nextPageToken, https, req) {
                 .then(function () {
                   resolve();
                 })
-            }, 1500);
+            }, 2000);
         }
         else {
           resolve();

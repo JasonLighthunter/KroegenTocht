@@ -50,7 +50,7 @@ module.exports = function(express, passport, crypto, user) {
   });
 
   router.get('/dashboard', isLoggedIn, function(req, res) {
-    res.render('dashboard.ejs');
+    res.render('dashboard.ejs', { places: req.session.places });
   });
 
   return router;
