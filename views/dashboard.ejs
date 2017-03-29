@@ -1,33 +1,129 @@
 <!-- views/dashboard.ejs -->
 <!doctype html>
 <html>
-  <head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- load fontawesome -->
-    <style>
-      body { padding-top:80px; }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1> Manage Races </h1>
-      <h2> My Races </h2>
-        <div class="well">
-          <% if (!user.races || user.races.length <= 0) { -%>
-            You do not participate in any races.
-          <% } else { -%>
-            *Insert your races here*
-          <% } -%>
-        </div>
-      <h2> Availible Races </h2>
-        <div class="well">
-          <% if (!races || races.length <= 0) { -%>
-            There are no ongoing races.
-          <% } else { -%>
-            *Insert availible races here*
-          <% } -%>
-        </div>
+<head>
+  <title>Node Authentication</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- load fontawesome -->
+  <style>
+    body { padding-top:80px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Participation -->
+
+    <!-- whitelisting -->
+    <% if (userCan('whitelist bars')) { %>
+    <h1> Manage Bars</h1>
+    <h2> Whitelisted Bars </h2>
+    <div class="bars-list">
+      <table class="bars-table">
+
+      </table>          
     </div>
+    <!-- whitelisted bars from /bars -->
+    <h2> Availible bars </h2>
+    <div class="google-places-list">
+      <table class="new-table">
+        <% if (places && places.length > 0) { %>
+        <% for(var i = 0; i < places.length; i++) { %>
+          <tr>
+            <td class="places-name"><%= places[i].name %></td>
+            <td class="places-id hidden"> <%= places[i].place_id %></td>
+            <td><a class="btn btn-success whitelist-bar">add</a><td>
+          </tr>
+          <% } %>
+
+          <% } %>
+        </table>
+      </div>
+      <% } %>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        $(".hidden").hide();
+        
+
+        $.get("http://localhost:8080/bars", function(data, status) {
+          console.log("getting bars");
+
+          var whitelistedBars = [];
+          $.each(data, function(i, item) {
+            $(".bars-table").append(
+              "<tr>" +
+              "<td class='bar-id hidden'>" + data[i]._id + "</td>" +
+              "<td class='bar-name'>" + data[i].name + "</td>" +
+              "<td>" +
+              "<a class='btn btn-danger remove-bar'>remove</a>" +
+              "</td>" +
+              "</tr>"
+            );
+            whitelistedBars.push(data[i].name);
+          });
+
+          console.log("fetched bars");
+
+          if ( $(".new-table").children().length <= 0 ) {
+            console.log("places is empty fetching live from google");
+
+            $.get("http://localhost:8080/places/getbars/51.6897829/5.2620178", function(data, status) {
+
+              $.each(data, function(i, item) {
+                if($.inArray(data[i].name, whitelistedBars) === -1) {
+                  $(".new-table").append(
+                    "<tr>" +
+                      "<td class='places-name'>" + data[i].name + "</td>" +
+                      "<td class='places-id hidden'>" + data[i].place_id +"</td>" +
+                      "<td>" +
+                        "<a class='btn btn-success whitelist-bar'>add</a>" +
+                      "</td>" +
+                    "</tr>"
+                  );
+                }
+              });
+            });
+          } else {
+            console.log("places is filled from session");
+
+            $(".new-table").children().children().children(".places-name").each( function() {
+              var row = $(this).parent();
+              console.log($(this).html());
+              if($.inArray($(this).html(), whitelistedBars) !== -1) {
+                row.hide();
+              }
+            });
+          }
+          
+        });
+
+        $("body").on('click', '.whitelist-bar', function() {
+          console.log("test")
+          var psId   =     $(this).parent().siblings(".places-id").html();
+          var newBarName = $(this).parent().siblings(".places-name").html();
+          var row        = $(this).parent().parent();
+          $.post("http://localhost:8080/bars", {name: newBarName, placesId: psId }, function() {
+            row.fadeOut();
+            location.reload();
+          });
+        });
+
+        $("body").on("click", ".remove-bar", function() {
+          console.log('remove clicked');
+          var barId = $(this).parent().siblings(".bar-id").html();
+          var row   = $(this).parent().parent();
+          $.ajax({
+            url: 'http://localhost:8080/bars/' + barId ,
+            type: 'DELETE',
+            success: function(result) {
+              row.fadeOut();
+              location.reload();
+            }
+          });
+        });
+
+      });
+    </script>
   </body>
-</html>
+  </html>

@@ -85,6 +85,8 @@ var placesRouter  = require('./app/routes/placesRoutes.js')(express, https);
 var racesRouter   = require('./app/routes/raceRoutes')(express, connectRolesUser);
 var usersRouter   = require('./app/routes/userRoutes')(express, racesRouter);
 
+var barsRouter    = require('./app/routes/barRoutes')(express);
+
 var testRouter    = require('./app/routes/trialRoutes.js')(express, connectRolesUser);
 
 app.use('/',        mainRouter);
@@ -96,6 +98,7 @@ app.use('/places',  placesRouter);
 app.use('/races',   racesRouter);
 app.use('/users',   usersRouter);
 
+app.use('/bars',    barsRouter);
 app.use('/test',    testRouter);
 
 // serve swagger
