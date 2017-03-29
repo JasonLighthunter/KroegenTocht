@@ -6,6 +6,7 @@ var express      = require('express');
 var app          = express();
 var port         = process.env.PORT || 8080;
 
+var path         = require('path');
 var mongoose     = require('mongoose');
 var passport     = require('passport');
 var connectRoles = require('connect-roles');
@@ -17,6 +18,30 @@ var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
+
+
+var swaggerJSDoc = require('swagger-jsdoc');
+// swagger definition
+var swaggerDefinition = {
+  info: {
+    title: 'Node Swagger API',
+    version: '1.0.0',
+    description: 'Demonstrating how to describe a RESTful API with Swagger',
+  },
+  host: 'localhost:8080',
+  basePath: '/',
+};
+
+// options for the swagger docs
+var options = {
+  // import swaggerDefinitions
+  swaggerDefinition: swaggerDefinition,
+  // path to the API docs
+  apis: ['./app/routes/*.js'],
+};
+
+// initialize swagger-jsdoc
+var swaggerSpec = swaggerJSDoc(options);
 
 var configDB = require('./config/database.js');
 
@@ -39,6 +64,7 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 
 app.set('view engine', 'ejs'); // set up ejs for templating
+app.use(express.static(path.join(__dirname, 'public')));
 
 // required for passport
 app.use(session({ secret: 'ilovescotchscotchyscotchscotch', placesIds: [], places: []})); // session secret
@@ -71,6 +97,12 @@ app.use('/races',   racesRouter);
 app.use('/users',   usersRouter);
 
 app.use('/test',    testRouter);
+
+// serve swagger
+app.get('/swagger.json', function(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // launch ======================================================================
 app.listen(port);
