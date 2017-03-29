@@ -4,8 +4,14 @@ console.log('Initializing places schema');
 
 // define the schema for our user model
 var barSchema = mongoose.Schema({
-  name : String,
-  place_Id : String
+  name : {
+    type: String,
+    required: true
+  },
+  _id : {
+    type: String,
+    required: true
+  }
 });
 
 barSchema.query.byName = function(nameQuery) {

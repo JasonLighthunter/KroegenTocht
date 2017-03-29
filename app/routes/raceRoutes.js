@@ -53,6 +53,10 @@ module.exports = function(express, user) {
       searchResult = searchResult.byName(req.query.name);
     }
 
+    if(req.query.active!==undefined){
+      searchResult = searchResult.byActive(req.query.active);
+    }
+
     searchResult.exec(function(err, races){
       res.json(races); 
     });

@@ -30,7 +30,7 @@
         <% for(var i = 0; i < places.length; i++) { %>
           <tr>
             <td class="places-name"><%= places[i].name %></td>
-            <td class="places-id hidden"> <%= places[i].place_id %></td>
+            <td class="places-id hidden"><%= places[i].place_id %></td>
             <td><a class="btn btn-success whitelist-bar">add</a><td>
           </tr>
           <% } %>
@@ -103,9 +103,14 @@
           var psId   =     $(this).parent().siblings(".places-id").html();
           var newBarName = $(this).parent().siblings(".places-name").html();
           var row        = $(this).parent().parent();
-          $.post("http://localhost:8080/bars", {name: newBarName, place_Id: psId }, function() {
-            row.fadeOut();
-            location.reload();
+          $.ajax({
+            url: "http://localhost:8080/bars/" + psId,
+            type: 'PUT',
+            data: {name: newBarName, _id: psId},
+            success: function () {
+              row.fadeOut();
+              location.reload();
+            }
           });
         });
 

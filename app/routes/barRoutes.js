@@ -79,7 +79,7 @@ module.exports = function(express) {
   /**
    * @swagger
    * /bars:
-   *   post:
+   *   put:
    *     tags:
    *       - Bars
    *     description: adds bar to database
@@ -104,9 +104,8 @@ module.exports = function(express) {
    *       failure:
    *         description: throws error
    */
-  router.post('/', function(req, res) {
-    var conditions = { name : req.body.name };
-    Bar.findOne(conditions, function(err, bar) {
+  router.put('/:barId', function(req, res) {
+    Bar.findById(req.params.barId, function(err, bar) {
       console.log(err);
       console.log(bar);
       if(err) {
@@ -115,7 +114,7 @@ module.exports = function(express) {
       if(bar) {
         console.log(bar);
         bar.name = req.body.name;
-        bar.place_Id = req.body.place_Id;
+        bar._id = req.body.place_Id;
         bar.save(function(err) {
           if(err){ 
             throw err;
