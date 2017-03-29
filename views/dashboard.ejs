@@ -30,6 +30,7 @@
         <% for(var i = 0; i < places.length; i++) { %>
           <tr>
             <td class="places-name"><%= places[i].name %></td>
+            <td class="places-id hidden"> <%= places[i].place_id %></td>
             <td><a class="btn btn-success whitelist-bar">add</a><td>
           </tr>
           <% } %>
@@ -74,6 +75,7 @@
                   $(".new-table").append(
                     "<tr>" +
                       "<td class='places-name'>" + data[i].name + "</td>" +
+                      "<td class='places-id hidden'>" + data[i].place_id +"</td>" +
                       "<td>" +
                         "<a class='btn btn-success whitelist-bar'>add</a>" +
                       "</td>" +
@@ -98,9 +100,10 @@
 
         $("body").on('click', '.whitelist-bar', function() {
           console.log("test")
+          var psId   =     $(this).parent().siblings(".places-id").html();
           var newBarName = $(this).parent().siblings(".places-name").html();
           var row        = $(this).parent().parent();
-          $.post("http://localhost:8080/bars", {name: newBarName}, function() {
+          $.post("http://localhost:8080/bars", {name: newBarName, placesId: psId }, function() {
             row.fadeOut();
             location.reload();
           });

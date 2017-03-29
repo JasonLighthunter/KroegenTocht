@@ -28,6 +28,7 @@ module.exports = function(express) {
       if(bar) {
         console.log(bar);
         bar.name = req.body.name;
+        bar.placesId = req.body.placesId;
         bar.save(function(err) {
           if(err){ 
             throw err;
