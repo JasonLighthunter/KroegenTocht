@@ -4,6 +4,7 @@ module.exports = function(express, user) {
 
   /**
    * @swagger
+   * definition:
    *   Puppy:
    *     properties:
    *       name:
@@ -37,21 +38,6 @@ module.exports = function(express, user) {
     res.send('root');
   });
 
-  /**
-   * @swagger
-   * /test/test1:
-   *   get:
-   *     tags:
-   *       - test
-   *     description: Returns the string containing "root";
-   *     produces:
-   *       - application/json
-   *     responses:
-   *       200:
-   *         description: An array of puppies
-   *         schema:
-   *           $ref: '#/definitions/Puppy'
-   */
   router.get('/test1', function(req, res) {
     var toReturn = 'test1';
     res.send(toReturn);

@@ -5,6 +5,19 @@ module.exports = function(express, passport, crypto) {
   // =====================================
   // Google ROUTES =======================
   // =====================================
+  /**
+   * @swagger
+   * /auth/google:
+   *   get:
+   *     tags:
+   *       - Social
+   *     description: Authenticate via Google OAuth
+   *     produces:
+   *       - text/html
+   *     responses:
+   *       default:
+   *         description: redirect to "/auth/google/callback"
+   */
   router.get('/google', 
     passport.authenticate('google', {
       scope : ['profile', 'email'] 
@@ -20,6 +33,19 @@ module.exports = function(express, passport, crypto) {
   // =====================================
   // REDDIT ROUTES =======================
   // =====================================
+  /**
+   * @swagger
+   * /auth/reddit:
+   *   get:
+   *     tags:
+   *       - Social
+   *     description: Authenticate via Reddit OAuth
+   *     produces:
+   *       - text/html
+   *     responses:
+   *       default:
+   *         description: redirect to "/auth/reddit/callback"
+   */
   router.get('/reddit', function(req, res, next) {
     req.session.state = crypto.randomBytes(32).toString('hex');
     passport.authenticate('reddit', {

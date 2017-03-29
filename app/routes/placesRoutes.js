@@ -124,6 +124,58 @@ module.exports = function(express, https) {
     next();
   });
 
+
+  /**
+   * @swagger
+   * definition:
+   *   Bar:
+   *    properties:
+   *      icon:
+   *        type: string
+   *      id:
+   *        type: string
+   *      name:
+   *        type: string
+   *      place_id:
+   *        type: string
+   *      reference:
+   *        type: string
+   *      scope:
+   *        type: string
+   *      vicinity:
+   *        type: string
+   *      types:
+   *        type: [string]
+   *      alt_ids:
+   *        type: [string]
+   *      photos:
+   *        type: [string]
+   *      opening_hours:
+   *        open_now:
+   *          type: bool
+   *      geometry:
+   *        location:
+   *          lat: float
+   *          lng: float
+   *      __v:
+   *        type: int
+   */
+
+  /**
+   * @swagger
+   * /places/getbars/longitude/latitude:
+   *   get:
+   *     tags:
+   *       - Places
+   *     description: Gets the 60 nearest bars within a radius of 5 kilometer form the google places API and returns them as a json array
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: An array of bars
+   *         schema:
+   *           $ref: '#/definitions/Bar'
+   */
   //for location
   router.get('/getbars/:longitude/:latitude', function (req, res) {
     console.log(req.params.longitude);
