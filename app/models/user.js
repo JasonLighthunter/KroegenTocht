@@ -23,7 +23,11 @@ var userSchema = mongoose.Schema({
     token    : String,
     username : String
   },
-  isPureSocialAccount : Boolean
+  isPureSocialAccount : {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 });
 
 // methods ======================
