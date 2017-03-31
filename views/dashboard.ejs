@@ -46,7 +46,7 @@
         $(".hidden").hide();
         
 
-        $.get("https://taverntest.herokuapp.com:8080/bars", function(data, status) {
+        $.get("https://taverntest.herokuapp.com/bars", function(data, status) {
           console.log("getting bars");
 
           var whitelistedBars = [];
@@ -68,7 +68,7 @@
           if ( $(".new-table").children().length <= 0 ) {
             console.log("places is empty fetching live from google");
 
-            $.get("https://taverntest.herokuapp.com:8080/places?longitude=51.6897829&latitude=5.2620178", function(data, status) {
+            $.get("https://taverntest.herokuapp.com/places?longitude=51.6897829&latitude=5.2620178", function(data, status) {
 
               $.each(data, function(i, item) {
                 if($.inArray(data[i].name, whitelistedBars) === -1) {
@@ -104,7 +104,7 @@
           var newBarName = $(this).parent().siblings(".places-name").html();
           var row        = $(this).parent().parent();
           $.ajax({
-            url: "https://taverntest.herokuapp.com:8080/bars/" + psId,
+            url: "https://taverntest.herokuapp.com/bars/" + psId,
             type: 'PUT',
             data: {name: newBarName, _id: psId},
             success: function () {
@@ -119,7 +119,7 @@
           var barId = $(this).parent().siblings(".bar-id").html();
           var row   = $(this).parent().parent();
           $.ajax({
-            url: 'https://taverntest.herokuapp.com:8080/bars/' + barId ,
+            url: 'https://taverntest.herokuapp.com/bars/' + barId ,
             type: 'DELETE',
             success: function(result) {
               row.fadeOut();
