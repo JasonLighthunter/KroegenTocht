@@ -115,7 +115,7 @@ module.exports = function(express) {
         console.log(bar);
         bar.name = req.body.name;
         bar._id = req.body.place_Id;
-        bar.save(function(err) {
+        bar.save(function(err, savedBar) {
           if(err){ 
             throw err;
           } else {
